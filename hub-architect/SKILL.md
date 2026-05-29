@@ -267,6 +267,7 @@ print(f"Accuracy: {accuracy}%")
 | **Gate B** | 误触发率 <= 5%，漏触发率 <= 3% | MUST | 不会把用户导到错误的 Hub |
 | **Gate C** | Token 开销下降 >= 25%，多叶子加载 <= 10% | SHOULD | 架构确实省了 token |
 | **Gate D** | 备份目录不在 loader 根内 | MUST | 备份不会被误触发 |
+| **Gate E** | Frontmatter 使用 `description:` 嵌入触发词，无 `triggers:` 字段 | SHOULD | 触发格式正确，Skill 可被自动触发 |
 
 **放行规则**：Gate A + B + D 全通过才允许继续清理旧入口。
 
@@ -299,6 +300,7 @@ print(f"Accuracy: {accuracy}%")
 - Gate B: {pass/fail}
 - Gate C: {pass/fail}
 - Gate D: {pass/fail}
+- Gate E: {pass/fail}
 
 ## Failed Cases (Top 10)
 - {id}: expected {expected}, got {predicted}
@@ -339,6 +341,14 @@ print(f"Accuracy: {accuracy}%")
 **迁移完成必须同时审计 .agents 与 .claude，不得以单根结果放行。**
 
 反模式：只查了 `.claude/skills/` -> 遗漏了 `.agents/skills/` 里的同名 Skill。
+
+### 规则 6：触发格式规范
+
+**触发词必须嵌入 `description` 字段，禁止使用 `triggers:` 字段。**
+
+反模式：使用 `triggers:` 字段 -> VS Code 和 CLI 都不支持 -> Skill 只能手动触发。
+
+详见 [references/strong-rules.md](references/strong-rules.md)。
 
 ---
 
@@ -474,6 +484,7 @@ description: >
 ## Trigger
 - Route only. Classify intent and load only one leaf.
 - Avoid broad multi-leaf loading to reduce token overhead.
+- **格式要求**：触发词必须写在 frontmatter 的 `description` 字段中，格式为 `Trigger when user says: ...` 或 `MUST trigger when user says: ...`。不要使用 `triggers:` 字段（VS Code 和 CLI 都不支持）。
 
 ## Purpose
 - {domain description}

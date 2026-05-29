@@ -14,6 +14,7 @@
 
 - [ ] 创建 Hub 目录结构：`{hub}/SKILL.md` + `{hub}/modules/` + `{hub}/references/`
 - [ ] Hub SKILL.md 只包含路由逻辑，不含执行细节
+- [ ] **Frontmatter 格式验证**：SKILL.md 和 LEAF.md 的触发词写在 `description` 字段中，不使用 `triggers:` 字段
 - [ ] 每个叶子有独立目录：`modules/{name}/LEAF.md`
 - [ ] LEAF.md 保留完整触发条件（可独立使用）
 - [ ] 路由规则覆盖所有叶子，无遗漏

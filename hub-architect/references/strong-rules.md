@@ -98,3 +98,40 @@ ls ~/.claude/skills/ | wc -l  # 18 个，看起来对了
 ```
 
 **为什么叫"复审"**：不是"迁移两次"，是"迁移完后，两个根都要扫一遍，确认没有遗漏或重复"。
+
+## 规则 6：触发格式规范
+
+**规则**：触发词必须嵌入 `description` 字段，禁止使用 `triggers:` 字段。
+
+**正确格式**：
+```yaml
+---
+name: my-skill
+description: >
+  做 X 的 skill。
+  MUST trigger when user says: "关键词1", "关键词2", "关键词3".
+---
+```
+
+**反模式（血的教训）**：
+```yaml
+# 错误：使用 triggers: 字段
+---
+name: my-skill
+description: 做 X 的 skill
+triggers: "关键词1, 关键词2, 关键词3"
+---
+# VS Code 和 CLI 都不支持 triggers: 字段
+# 结果：写了等于没写，Skill 只能手动触发
+```
+
+**为什么必须这个格式**：
+- `triggers:` 不是 SKILL.md frontmatter 的官方字段，VS Code 和 CLI 都不支持
+- 触发词嵌入 `description` 是唯一被识别的格式
+- 写通用 Skill 时只用两边都支持的字段：name, description, compatibility, metadata
+
+**诊断优先级**（触发不生效时）：
+1. SKILL.md 结构是否完整
+2. modules 目录是否存在
+3. 符号链接状态
+4. 触发条件格式（是否在 `description` 中）
